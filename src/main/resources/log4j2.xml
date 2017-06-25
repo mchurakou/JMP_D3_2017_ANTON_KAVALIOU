@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorinterval="30" status="info" strict="true">
+    <Properties>
+        <Property name="filename">app.log</Property>
+        <Property name="filename.match">match.log</Property>
+        <Property name="log4j.logger.org.hibernate.SQL">DEBUG</Property>
+        <Property name="log4j.additivity.org.hibernate.SQL">true</Property>
+    </Properties>
+    <Appenders>
+        <Appender type="Console" name="Console">
+            <Layout type="PatternLayout" pattern="%d %p [%t] %m%n" />
+        </Appender>
+        <Appender type="File" name="FileApp" fileName="${filename}">
+            <Layout type="PatternLayout" pattern="%d %p %C{1.} [%t] %m%n" />
+        </Appender>
+        <Appender type="File" name="FileMatch" fileName="${filename.match}">
+            <Layout type="PatternLayout" pattern="%d %p %C{1.} [%t] %m%n" />
+        </Appender>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.epam.jmpddd" level="INFO">
+            <AppenderRef ref="FileMatch"/>
+        </Logger>
+        <Root level="debug">
+            <AppenderRef ref="FileApp"/>
+        </Root>
+    </Loggers>
+</Configuration>
