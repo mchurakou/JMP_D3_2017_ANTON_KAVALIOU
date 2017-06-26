@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class AggregateRoot {
-    private static final int EVENT_FREQ_MS = 15000;
+    private static final int EVENT_FREQ_MS = 10000;
 
     private final EntityManager em;
 
@@ -34,14 +34,20 @@ public abstract class AggregateRoot {
 
     protected synchronized void apply(Event event) {
         EntityTransaction tx = em.getTransaction();
-        tx.begin();
+        if (!tx.isActive()) {
+            tx.begin();
+        }
         em.persist(event);
-        tx.commit();
+        if (tx.isActive()) {
+            tx.commit();
+        }
     }
 
     protected synchronized <T extends Event> int processEvents(Class<T> type, Consumer<T> processEvent) {
         EntityTransaction tx = em.getTransaction();
-        tx.begin();
+        if (!tx.isActive()) {
+            tx.begin();
+        }
         List<T> events = em.createQuery("from " + type.getSimpleName(), type).getResultList();
         events.forEach(processEvent);
         events.forEach(em::remove);
